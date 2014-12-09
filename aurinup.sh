@@ -87,9 +87,9 @@ function upgrade {
                 cd $TMP/$PACKAGE
 	            makepkg -s
 	            sudo pacman --noconfirm -U $PACKAGE*.pkg.tar.xz
+            done
 	        cd "$CUR_DIR"
 	        rm -rf $TMP
-            done
         else
             echo No change was made. Bye!
         fi
