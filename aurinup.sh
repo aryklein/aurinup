@@ -33,7 +33,7 @@ function install {
             tar xvzf $TMP/$PACKAGE.tar.gz -C $TMP
             cd $TMP/$PACKAGE
             makepkg -s
-            sudo pacman --noconfirm -U $PACKAGE*.pkg.tar.xz
+            pacman --noconfirm -U $PACKAGE*.pkg.tar.xz
         done
         cd "$CUR_DIR"
         rm -rf $TMP
@@ -48,7 +48,7 @@ function upgrade {
     for PACKAGE in `pacman -Qm | gawk '{print $1}'`; do
 
         # get the installed package version
-        INSTALLED_VER=`sudo pacman -Qm | grep "^$PACKAGE\s" |gawk '{print $2}'`
+        INSTALLED_VER=`pacman -Qm | grep "^$PACKAGE\s" |gawk '{print $2}'`
 
         # get the current version of the package in the AUR
         AUR_VER=`curl -s https://aur.archlinux.org/packages/$PACKAGE/|grep Package\ Details:| gawk '{print $4}'`
@@ -86,7 +86,7 @@ function upgrade {
                 tar xvzf $TMP/$PACKAGE.tar.gz -C $TMP
                 cd $TMP/$PACKAGE
 	            makepkg -s
-	            sudo pacman --noconfirm -U $PACKAGE*.pkg.tar.xz
+	            pacman --noconfirm -U $PACKAGE*.pkg.tar.xz
             done
 	        cd "$CUR_DIR"
 	        rm -rf $TMP
@@ -98,9 +98,14 @@ function upgrade {
 }
 
 
-if [[ -z $1 ]]; then
-    upgrade
+if [ "$(id -u)" != "0" ]; then
+    echo "This script must be run as root" 1>&2
+    exit 1
 else
-    install $*
+    if [[ -z $1 ]]; then
+        upgrade
+    else
+        install $*
+    fi
 fi
 
