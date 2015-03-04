@@ -1,12 +1,27 @@
 #!/usr/bin/bash
 
+
+function install_pkgs {
+    TMP=`mktemp -d`
+    CUR_DIR=`pwd`
+    for PACKAGE in $*; do
+        curl -s https://aur.archlinux.org/packages/${PACKAGE:0:2}/$PACKAGE/$PACKAGE.tar.gz > $TMP/$PACKAGE.tar.gz
+        tar xvzf $TMP/$PACKAGE.tar.gz -C $TMP
+        cd $TMP/$PACKAGE
+        makepkg -s
+        sudo pacman --noconfirm -U $PACKAGE*.pkg.tar.xz
+    done
+    cd "$CUR_DIR"
+    rm -rf $TMP
+}
+
 function install {
     COUNT=0
     for PACKAGE in $*; do
         AUR_VER=`curl -s https://aur.archlinux.org/packages/$PACKAGE/|grep Package\ Details:| gawk '{print $4}'`
         AUR_VER=${AUR_VER%</h2>}
         if [[ -z $AUR_VER ]]; then
-            echo -e "error: target not found: $PACKAGE"
+            echo -e "error target not found: $PACKAGE"
             continue
         fi
         PKG_TO_INSTALL[COUNT]=$PACKAGE
@@ -26,18 +41,11 @@ function install {
     echo -e "\n"
     read -r -p ":: Proceed with installation? [Y/n] " RESPONSE
     if [[ $RESPONSE =~ ^(y|Y|yes|)$ ]]; then
-        TMP=`mktemp -d`
-        CUR_DIR=`pwd`
-        for PACKAGE in ${PKG_TO_INSTALL[*]}; do
-            curl -s https://aur.archlinux.org/packages/${PACKAGE:0:2}/$PACKAGE/$PACKAGE.tar.gz > $TMP/$PACKAGE.tar.gz
-            tar xvzf $TMP/$PACKAGE.tar.gz -C $TMP
-            cd $TMP/$PACKAGE
-            makepkg -s
-            sudo pacman --noconfirm -U $PACKAGE*.pkg.tar.xz
-        done
-        cd "$CUR_DIR"
-        rm -rf $TMP
+        install_pkgs ${PKG_TO_INSTALL[*]}
+    else
+        echo No change was made. Bye!
     fi
+
 
 }
 
@@ -65,35 +73,24 @@ function upgrade {
             (( COUNT++ ))
         fi
     
-        done
+    done
 
     if [[ -z $PKG_TO_UPGRADE ]]; then
         echo -e "All package are up to date. Nothing to do\n"
-
-    else
-       
-        printf "Packages (${#PKG_TO_UPGRADE[@]}): "
-        for ((i = 0 ; i < $COUNT ; i++)); do
-            printf "%s%c%s  " "${PKG_TO_UPGRADE[i]}-${PKG_VER[i]}"
-        done
-        echo -e "\n"
-        read -r -p ":: Proceed with installation? [Y/n] " RESPONSE
-        if [[ $RESPONSE =~ ^(y|yes|)$ ]]; then
-            TMP=`mktemp -d` 
-            CUR_DIR=`pwd`
-            for PACKAGE in ${PKG_TO_UPGRADE[*]}; do
-    	        curl -s https://aur.archlinux.org/packages/${PACKAGE:0:2}/$PACKAGE/$PACKAGE.tar.gz > $TMP/$PACKAGE.tar.gz
-                tar xvzf $TMP/$PACKAGE.tar.gz -C $TMP
-                cd $TMP/$PACKAGE
-	            makepkg -s
-	            sudo pacman --noconfirm -U $PACKAGE*.pkg.tar.xz
-            done
-	        cd "$CUR_DIR"
-	        rm -rf $TMP
-        else
-            echo No change was made. Bye!
-        fi
+        exit 1
     fi
+
+    printf "Packages (${#PKG_TO_UPGRADE[@]}): "
+    for ((i = 0 ; i < $COUNT ; i++)); do
+        printf "%s%c%s  " "${PKG_TO_UPGRADE[i]}-${PKG_VER[i]}"
+    done
+    echo -e "\n"
+    read -r -p ":: Proceed with installation? [Y/n] " RESPONSE
+    if [[ $RESPONSE =~ ^(y|yes|)$ ]]; then
+        install_pkgs ${PKG_TO_UPGRADE[*]}
+    else
+        echo No change was made. Bye!
+  fi
 
 }
 
