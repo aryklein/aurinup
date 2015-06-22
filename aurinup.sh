@@ -96,7 +96,7 @@ function upgrade {
 
 
 if [ "$(id -u)" == "0" ]; then
-    echo "This script should't be run as root" 1>&2
+    echo "This script shouldn't be run as root" 1>&2
     exit 1
 else
     if [[ -z $1 ]]; then
