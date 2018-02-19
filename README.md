@@ -1,11 +1,15 @@
-#aurinup
+# aurinup
 
-A simple bash script for upgrade and install packages from AUR.
+A simple bash script to upgrade and install packages from the Archlinux AUR.
 
 * To install new packages:
 
-*$ ./aurinup package1 package2 package3... packageN*
+```sh
+$ ./aurinup package1 package2 package3... packageN
+```
 
 * To upgrade all AUR installed packages:
 
-*$ ./aurinup*
+```
+$ ./aurinup
+```
