@@ -1,6 +1,5 @@
 #!/usr/bin/bash
 
-
 function install_pkgs {
     TMP=`mktemp -d`
     CUR_DIR=`pwd`
@@ -27,7 +26,6 @@ function install {
         PKG_TO_INSTALL[COUNT]=$PACKAGE
         PKG_VER[COUNT]=$AUR_VER
         (( COUNT++ ))
-
     done
 
     if [[ -z $PKG_TO_INSTALL ]]; then
@@ -38,6 +36,7 @@ function install {
     for ((i = 0 ; i < $COUNT ; i++)); do
         printf "%s%c%s  " "${PKG_TO_INSTALL[i]}-${PKG_VER[i]}"
     done
+    
     echo -e "\n"
     read -r -p ":: Proceed with installation? [Y/n] " RESPONSE
     if [[ $RESPONSE =~ ^(y|Y|yes|)$ ]]; then
@@ -45,10 +44,7 @@ function install {
     else
         echo No change was made. Bye!
     fi
-
-
 }
-
 
 function upgrade {
     COUNT=0
@@ -71,8 +67,7 @@ function upgrade {
             PKG_TO_UPGRADE[COUNT]=$PACKAGE
             PKG_VER[COUNT]=$AUR_VER
             (( COUNT++ ))
-        fi
-    
+        fi    
     done
 
     if [[ -z $PKG_TO_UPGRADE ]]; then
@@ -84,6 +79,7 @@ function upgrade {
     for ((i = 0 ; i < $COUNT ; i++)); do
         printf "%s%c%s  " "${PKG_TO_UPGRADE[i]}-${PKG_VER[i]}"
     done
+    
     echo -e "\n"
     read -r -p ":: Proceed with installation? [Y/n] " RESPONSE
     if [[ $RESPONSE =~ ^(y|yes|)$ ]]; then
@@ -91,9 +87,7 @@ function upgrade {
     else
         echo No change was made. Bye!
   fi
-
 }
-
 
 if [ "$(id -u)" == "0" ]; then
     echo "This script shouldn't be run as root" 1>&2
@@ -105,4 +99,3 @@ else
         install $*
     fi
 fi
-
