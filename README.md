@@ -8,7 +8,7 @@ To install new packages:
 $ ./aurinup package1 package2 package3... packageN
 ```
 
-To upgrade all AUR installed packages:
+To upgrade all packages installed from the AUR:
 
 ```
 $ ./aurinup
