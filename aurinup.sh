@@ -4,11 +4,10 @@ function install_pkgs {
     TMP=`mktemp -d`
     CUR_DIR=`pwd`
     for PACKAGE in $*; do
-        curl -s -L -o $TMP/$PACKAGE.tar.gz https://aur.archlinux.org/cgit/aur.git/snapshot/$PACKAGE.tar.gz
-        tar xvzf $TMP/$PACKAGE.tar.gz -C $TMP
+        cd $TMP
+        git clone https://aur.archlinux.org/$PACKAGE.git
         cd $TMP/$PACKAGE
-        makepkg -s
-        sudo pacman --noconfirm -U $PACKAGE*.pkg.tar.xz
+        makepkg -si --noconfirm
     done
     cd "$CUR_DIR"
     rm -rf $TMP
