@@ -81,7 +81,7 @@ function upgrade {
     
     echo -e "\n"
     read -r -p ":: Proceed with installation? [Y/n] " RESPONSE
-    if [[ $RESPONSE =~ ^(y|yes|)$ ]]; then
+    if [[ $RESPONSE =~ ^(y|Y|yes|)$ ]]; then
         install_pkgs ${PKG_TO_UPGRADE[*]}
     else
         echo No change was made. Bye!
