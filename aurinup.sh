@@ -62,7 +62,7 @@ function upgrade {
         fi
 
         # generate a list of packages to upgrade
-        if [[ "$INSTALLED_VER" < "$AUR_VER" ]]; then
+        if [[ "$INSTALLED_VER" != "$AUR_VER" ]]; then
             PKG_TO_UPGRADE[COUNT]=$PACKAGE
             PKG_VER[COUNT]=$AUR_VER
             (( COUNT++ ))
