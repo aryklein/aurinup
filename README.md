@@ -1,6 +1,6 @@
 # aurinup
 
-An AUR helper written in Bash that installs and upgrades packages from the Arch User Repository.
+A simple AUR helper written in Bash that installs and upgrades packages from the Arch User Repository.
 
 ## Usage
 
